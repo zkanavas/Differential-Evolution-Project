@@ -1,0 +1,245 @@
+<head><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"></head><div class="container-fluid"><div class="row"><div class="col"><h1 class="text-center">Link Function</h1></div></div><div class="row"><div class="px-3"><p>The purpose of this analysis is to understand how the results of the differential evolution algorithm respond to a nonlinear objective function. This is done by introducing a <em> link </em> function to the objective function - the function that defines the weighting scheme of the pore network. The objective function previously has been a simple linear combination of the structural attributes of interest. The following 8 link functions were tested:</p></div></div><div class="row"><table class = "table table-striped"><thead><tr><th scope="col">Link Function</th><th scope="col">Objective Function Transformation</th></tr></thead><tbody> <tr> <td>Identity</td><td>obj = obj</td></tr><tr><td>Inverse</td><td> obj = obj<sup>-1</sup></td></tr><tr><td>Natural Log</td><td>obj = ln(obj)</td></tr><tr><td>exp</td><td>obj = e<sup>obj</sup></td></tr><tr><td>Inverse Squared</td><td>obj = obj<sup>-2</sup></td></tr><tr><td>Inverse Square Root</td><td> obj = obj<sup>-1/2</sup></td></tr><tr><td>Logit</td><td>obj = ln(obj/(1-obj))</td></tr><tr><td>Inverse Logit</td><td>obj = e<sup>obj</sup>/(1+e<sup>obj</sup>)</td></tr></tbody></table></div><div class="row"><div class ="px-3"><p>This project uses the SciPy function: optimize.differential_evolution. The seed was kept constant at 1 to ensure experiment reproducibility; each structural attribute weight was bounded between 0 and 10; the recombination constant was set to 0.8; the mutation constant was the tuple (0.5,1) which employs dithering (dithering randomly changes the mutation constant on a generation by generation basis); the absolute tolerance was set to 0 and the relative tolerance was set to 0.01; the strategy was set to "best1bin"; polish was set to true meaning scipy.optimize.minimize is used to polish the best population member at the end, which can improve the minimization slightly; and the initial population was DR-All (the identity matrix with 10 along the diagonal). With those function input parameters set, the link function was changed for each experiment to compare the accuracy, runtime, and weights assigned to each structural parameter, as shown in Tables 1 & 2. </p> </div></div><div class="row"><div class = "px-3"><h3> <strong> Table 1. </strong> Weight Assigned to Each Structural Attribute</h3></div></div><div class="row"><div class="col"><table border="1" class="dataframe table table-responsive table-striped table-hover">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Arc Length</th>
+      <th>Euclidean</th>
+      <th>Min Thickness</th>
+      <th>Mean Thickness</th>
+      <th>Max Thickness</th>
+      <th>Long &amp; Thick</th>
+      <th>Widest Bottleneck</th>
+      <th>Quino</th>
+      <th>Curvature</th>
+      <th>Straightness</th>
+      <th>Volume</th>
+      <th>Aspect Ratio</th>
+      <th>Poiseuille</th>
+      <th>Node Degree</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>identity</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00000</td>
+      <td>0.164628</td>
+      <td>10.000000</td>
+      <td>0.00000</td>
+      <td>7.085110</td>
+      <td>0.000000</td>
+      <td>0.000000e+00</td>
+      <td>0.0</td>
+      <td>10.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>log</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00000</td>
+      <td>0.164628</td>
+      <td>10.000000</td>
+      <td>0.00000</td>
+      <td>7.085110</td>
+      <td>0.000000</td>
+      <td>0.000000e+00</td>
+      <td>0.0</td>
+      <td>10.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>inverse</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00000</td>
+      <td>0.164628</td>
+      <td>10.000000</td>
+      <td>0.00000</td>
+      <td>7.085110</td>
+      <td>0.000000</td>
+      <td>0.000000e+00</td>
+      <td>0.0</td>
+      <td>10.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>exp</th>
+      <td>2.281282</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>2.43365</td>
+      <td>0.000000</td>
+      <td>6.889628</td>
+      <td>1.16058</td>
+      <td>6.387604</td>
+      <td>7.869429</td>
+      <td>9.981220e-09</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>inverse squared</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00000</td>
+      <td>0.164628</td>
+      <td>10.000000</td>
+      <td>0.00000</td>
+      <td>7.085110</td>
+      <td>0.000000</td>
+      <td>0.000000e+00</td>
+      <td>0.0</td>
+      <td>10.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>inverse square root</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>6.707214e-07</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>10.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>inverse logit</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>10.000000</td>
+      <td>0.000000e+00</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>logit</th>
+      <td>0.000000</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.00000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.00000</td>
+      <td>0.887677</td>
+      <td>0.000000</td>
+      <td>0.000000e+00</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table></div></div><div class="row"><div class="col"><div class = "text-center"><figure class="figure"><img src="Link Function.png" class="figure-img img-fluid rounded" alt="..."><figcaption class="figure-caption text-center"><strong> Figure 1. </strong> Relative Importance of each Structural Attribute for each Experiment</figcaption></figure></div></div></div><div class="row"><div class ="px-3"><p> </p></div></div><div class="row"><div class = "px-3"><h3> <strong> Table 2. </strong> Associated Accuracies and Runtime (in sec)</h3></div></div><div class="row"><div class="col"><table border="1" class="dataframe table table-responsive table-striped table-hover">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>100% Saturation Accuracy</th>
+      <th>83% Accuracy</th>
+      <th>77% Saturation Accuracy</th>
+      <th>71% Saturation Accuracy</th>
+      <th>Average Accuracy</th>
+      <th>Runtime</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>identity</th>
+      <td>-54.285714</td>
+      <td>-60.975610</td>
+      <td>-91.532258</td>
+      <td>-94.779116</td>
+      <td>-75.393175</td>
+      <td>675.203079</td>
+    </tr>
+    <tr>
+      <th>log</th>
+      <td>-54.285714</td>
+      <td>-60.975610</td>
+      <td>-91.532258</td>
+      <td>-94.779116</td>
+      <td>-75.393175</td>
+      <td>681.376290</td>
+    </tr>
+    <tr>
+      <th>inverse</th>
+      <td>-54.285714</td>
+      <td>-60.975610</td>
+      <td>-91.532258</td>
+      <td>-94.779116</td>
+      <td>-75.393175</td>
+      <td>678.307861</td>
+    </tr>
+    <tr>
+      <th>exp</th>
+      <td>-69.230769</td>
+      <td>-81.200000</td>
+      <td>-91.984733</td>
+      <td>-94.841270</td>
+      <td>-84.314193</td>
+      <td>3742.053137</td>
+    </tr>
+    <tr>
+      <th>inverse squared</th>
+      <td>-54.285714</td>
+      <td>-60.975610</td>
+      <td>-91.532258</td>
+      <td>-94.779116</td>
+      <td>-75.393175</td>
+      <td>676.322714</td>
+    </tr>
+    <tr>
+      <th>inverse square root</th>
+      <td>-52.226721</td>
+      <td>-64.197531</td>
+      <td>-0.000000</td>
+      <td>-90.534979</td>
+      <td>-51.739808</td>
+      <td>1845.734596</td>
+    </tr>
+    <tr>
+      <th>inverse logit</th>
+      <td>-5.384615</td>
+      <td>-16.778523</td>
+      <td>-33.076923</td>
+      <td>-63.372093</td>
+      <td>-29.653039</td>
+      <td>615.082783</td>
+    </tr>
+    <tr>
+      <th>logit</th>
+      <td>-3.759398</td>
+      <td>-79.802956</td>
+      <td>-82.258065</td>
+      <td>-95.575221</td>
+      <td>-65.348910</td>
+      <td>1227.416330</td>
+    </tr>
+  </tbody>
+</table></div></div></div>
