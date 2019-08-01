@@ -1,2 +1,8 @@
-# MyApp
-This is my README.
+# Linking Pore Network Structure to Preferential Pathway Development: Differential Evolution & Shortest Path Analysis
+## Project Overview
+This project is searching for a quantifiable relationship between pore network structure and velocity distributions. With a known percolating pathway, the project compares the shortest path, using Dijkstra’s algorithm (weighted by various structural attributes), to determine the level of overlap or accuracy. To employ Dijkstra's algorithm on my pore networks, I used the NetworkX library function: dijkstra. If a path is highly accurate then the weighting scheme used to produce it is said to be influential on the development of preferential flow pathways. The structural attributes explored include: arc length, Euclidean distance, minimum thickness, mean thickness, maximum thickness, long & thick channels, widest bottleneck, Quino (exp(-1/mean thickness)), channel curvature, channel straightness, channel volume, aspect ratio, Poiseuille ratio, and node degree.
+
+To search through what combinations of these structural attributes produces an accurate shortest path, this project employed differential evolution – a genetic algorithm - using the SciPy.optimize library function: differential evolution. This algorithm will continuously change the weight multiplied against the structural attribute value to make it more or less impactful to the overall weighting scheme, comparing each population member to find the “fittest” or “most accurate” weighting scheme. 
+
+With the project aim defined, let's explore the repository contents. 
+## Folders
