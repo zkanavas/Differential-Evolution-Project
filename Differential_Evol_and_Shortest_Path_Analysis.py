@@ -28,23 +28,26 @@ dataDirectory = os.path.normpath(r'C:\Users\zkana\Box Sync\Morales Lab\Z_Kanavas
 
 #Samples = [item for sublist in S for item in sublist]
 
-def find_path(w,accflag=True, *SamplestoUse):
+def find_path(w, *Samples_Tiers_and_tiernames, accflag=True):
     w_arcL = w[0]
     w_Euc = w[1]
     w_Thin = w[2]
     w_MeanWidth = w[3]
     w_Thick = w[4]
-    w_LT = w[5]
-    w_widBot = w[6]
-    w_Quino = w[7]
-    w_Curvature = w[8]
-    w_Straightness = w[9]
-    w_Volume = w[10]
-    w_AspectRatio = w[11]
-    w_Poiseuille = w[12]
-    w_Connectivity = w[13]
+#    w_LT = w[5]
+    w_widBot = w[5]#w[6]
+#    w_Quino = w[7]
+#    w_Curvature = w[8]
+#    w_Straightness = w[9]
+#    w_Volume = w[10]
+#    w_AspectRatio = w[11]
+#    w_Poiseuille = w[12]
+#    w_Connectivity = w[13]
 #    w_EucThick = w[7]
-
+    w_Short = w[6]#w[14]
+    SamplestoUse = Samples_Tiers_and_tiernames[0]
+    Tiers = Samples_Tiers_and_tiernames[1]
+    tiername = Samples_Tiers_and_tiernames[2]
     sat_acc = np.zeros([len(SamplestoUse)])
     for z in range(len(SamplestoUse)):
         os.chdir(dataDirectory+'/'+SamplestoUse[z])
@@ -65,18 +68,27 @@ def find_path(w,accflag=True, *SamplestoUse):
         H_Thin = min_Width/(np.std(min_Width))
         H_MeanWidth = meanWidth/(np.std(meanWidth))
         H_Thick = inv_meanWidth/(np.std(inv_meanWidth))
-        H_LT = (arcLength/(np.std(arcLength)))*(inv_meanWidth/(np.std(inv_meanWidth)))
+#        H_LT = H_arcL*(inv_meanWidth/(np.std(inv_meanWidth)))
         H_widBot = inv_min_Width/(np.std(inv_min_Width))
 #        H_EucThick = (Euclidean)*(inv_meanWidth)
-        H_Quino = np.exp(-1/(meanWidth/(np.std(meanWidth))))
-        H_Curvature = 1-((Euclidean/np.std(Euclidean))/(arcLength/np.std(arcLength)))
-        H_Straightness = 1/H_Curvature
-        H_Volume = (arcLength/np.std(arcLength))*((min_Width/np.std(min_Width))**2)*np.pi
-        H_AspectRatio = (arcLength/np.std(arcLength))/(min_Width/np.std(min_Width))
-        H_Poiseuille = ((meanWidth/np.std(meanWidth))**4)/(arcLength/np.std(arcLength))
-        H_Connectivity = Data[0::2,6]
+#        H_Quino = np.exp(-1/H_MeanWidth)
+#        H_Curvature = 1-(H_Euc/H_arcL)
+#        for i in range(len(H_Curvature)):
+#            if H_Curvature[i] < 0:
+#                H_Curvature[i] = 0
+#        H_Straightness = 1/H_Curvature
+#        for i in range(len(H_Straightness)):
+#            if H_Straightness[i] == np.inf:
+#                H_Straightness[i] = 1
+#        H_Volume = H_arcL*((H_Thin)**2)*np.pi
+#        H_AspectRatio = H_arcL/H_Thin
+#        H_Poiseuille = (H_MeanWidth**4)/H_arcL
+#        H_Connectivity = Data[0::2,6]
+        H_Short = 1/H_arcL        
         
-        obj = w_arcL*H_arcL + w_Euc*H_Euc + w_Thin*H_Thin + w_MeanWidth*H_MeanWidth + w_Thick*H_Thick + w_LT*H_LT + w_widBot*H_widBot + w_Quino*H_Quino + w_Curvature*H_Curvature + w_Straightness*H_Straightness + w_Volume*H_Volume +w_AspectRatio*H_AspectRatio + w_Poiseuille*H_Poiseuille + w_Connectivity*H_Connectivity #w_EucThick*H_EucThick + w_Quino*H_Quino + w_Tortuosity*H_Tortuosity + w_Straightness*H_Straightness + w_Volume*H_Volume +w_AspectRatio*H_AspectRatio + w_Poiseuille*H_Poiseuille + w_Connectivity*H_Connectivity
+        obj = w_arcL*H_arcL + w_Euc*H_Euc +w_Thin*H_Thin + w_MeanWidth*H_MeanWidth + w_Thick*H_Thick + w_widBot*H_widBot + w_Short*H_Short
+        
+#        obj = w_arcL*H_arcL + w_Euc*H_Euc + w_Thin*H_Thin + w_MeanWidth*H_MeanWidth + w_Thick*H_Thick + w_LT*H_LT + w_widBot*H_widBot + w_Quino*H_Quino + w_Curvature*H_Curvature + w_Straightness*H_Straightness + w_Volume*H_Volume +w_AspectRatio*H_AspectRatio + w_Poiseuille*H_Poiseuille + w_Connectivity*H_Connectivity #w_EucThick*H_EucThick + w_Quino*H_Quino + w_Tortuosity*H_Tortuosity + w_Straightness*H_Straightness + w_Volume*H_Volume +w_AspectRatio*H_AspectRatio + w_Poiseuille*H_Poiseuille + w_Connectivity*H_Connectivity
         if (link == 'identity'):
             obj == obj
         elif link == 'log':
@@ -161,15 +173,17 @@ def find_path(w,accflag=True, *SamplestoUse):
         if not accflag:
             lim = len(path)-1
             plt.figure()
-            threshold_index = (np.where("'"+SamplestoUse[z]+"'" == Tiers[zoe].Sample_Names))
-            plt.title('Sample Name: '+ SamplestoUse[z]+ '; Percolation Threshold: '+ str(Tiers[zoe].Percolation_Threshold[threshold_index[0]].to_list()))
+            threshold_index = (np.where("'"+SamplestoUse[z]+"'" == Tiers.Sample_Names))
+            plt.title('Sample Name: '+ SamplestoUse[z]+ '; Percolation Threshold: '+ str(Tiers.Percolation_Threshold[threshold_index[0]].to_list()))
             plt.imshow(Percolating_Path, cmap='Greys')
             plt.plot(X[1:lim],Y[1:lim], '--',c = 'cyan',zorder=1, lw=3)
             plt.scatter(X[1:lim],Y[1:lim], c='red',s=25 ,zorder = 2)
             plt.gca().get_xaxis().set_ticks([])
             plt.gca().get_yaxis().set_ticks([])
             plt.grid(False)
-            plt.savefig(link+SamplestoUse[z]+'.png',bbox_inches='tight')
+            image_name = link+SamplestoUse[z]+'.png'
+            path_for_image = os.path.abspath(r'C:\Users\zkana\OneDrive\Documents\Previous Semesters\Winter 2019\ECI 273\Homework\Term Project'+'/'+tiername)
+            plt.savefig(os.path.join(path_for_image,image_name),bbox_inches='tight')
             
         Overlapping_Matrix = np.multiply(Shortest_Path, Percolating_Path)
         Accuracy = -1*(100*((np.sum(Overlapping_Matrix))/(np.sum(Shortest_Path))))
@@ -187,17 +201,18 @@ DR_All = ([10,0,0,0,0,0,0,0,0,0,0,0,0,0],
           [0,0,0,10,0,0,0,0,0,0,0,0,0,0],
           [0,0,0,0,10,0,0,0,0,0,0,0,0,0],
           [0,0,0,0,0,10,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,10,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,10,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,10,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,10,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0,10,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0,0,10,0,0],
-          [0,0,0,0,0,0,0,0,0,0,0,0,10,0],
-          [0,0,0,0,0,0,0,0,0,0,0,0,0,10],)
+          [0,0,0,0,0,0,10,0,0,0,0,0,0,0])
+#          [0,0,0,0,0,0,0,10,0,0,0,0,0,0],
+#          [0,0,0,0,0,0,0,0,10,0,0,0,0,0],
+#          [0,0,0,0,0,0,0,0,0,10,0,0,0,0],
+#          [0,0,0,0,0,0,0,0,0,0,10,0,0,0],
+#          [0,0,0,0,0,0,0,0,0,0,0,10,0,0],
+#          [0,0,0,0,0,0,0,0,0,0,0,0,10,0],
+#          [0,0,0,0,0,0,0,0,0,0,0,0,0,10],)
 
 # setting bounds for parameters (w's)
-bounds = [(0,10) for x in range(14)]
+bounds = [(0,10) for x in range(7)]#range(14)]
+
 
 # callback function to track progress of minimization
 def callback(xk, convergence):
